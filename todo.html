@@ -12,11 +12,12 @@
     <button onclick="addTodo()">Add Todo</button>
 
     <div id="todo-list"></div>
-    <script>
 
-        const todos = [{
+    <script>
+        //Model
+        let todos = [{
             title: 'Get groceries',
-            dueDate: '2022-10-04' ,
+            dueDate: '2022-10-04',
             id: 'id1'
         }, {
             title: 'Wash car',
@@ -29,53 +30,66 @@
         }];
 
         render();
-        
-        function addTodo() {
-            const textbox = document.getElementById('todo-title');
-            const title = textbox.value;
-
-            const datePicker=document.getElementById('date-picker');
-            const dueDate = datePicker.value;
-
-            const id = new Date().getTime();
+        //Create a todo
+        function createTodo(title,dueDate) {
+            const id = '' + new Date().getTime();
 
             todos.push({
                 title: title,
                 dueDate: dueDate,
                 id: id
+            });
+          }
+        //Delete a todo
 
+        function removeTodo(idToDelete) {
+            todos = todos.filter(function (todo) {
+                if (todo.id === idToDelete) {
+                    return false;
+                } else {
+                    return true;
+                } //If the id of this todo matches idToDelete, return false. For everythng else, retrun true
             });
 
+        }
+    //Controller 
+        function addTodo() {
+            const textbox = document.getElementById('todo-title');
+            const title = textbox.value;
+
+            const datePicker = document.getElementById('date-picker');
+            const dueDate = datePicker.value;
+
+            createTodo(title, dueDate);
             render();
 
         }
         
-        function deleteTodo(event){
+        function deleteTodo(event) {
             const deleteButton = event.target;
             const idToDelete = deleteButton.id;
 
-            todos.filter(function(todo){
-                
-
-            });
+            removeTodo(idToDelete);
+            render();            
         }
-
+        //View Section
         function render(){
             //reset our list
             document.getElementById('todo-list').innerHTML = '';
 
-        todos.forEach(function(todo){
-            const element = document.createElement('div');
-            element.innerText = todo.title + ' ' + todo.dueDate;
+            todos.forEach(function(todo) {
+                const element = document.createElement('div');
+                element.innerText = todo.title + ' ' + todo.dueDate;
 
-            const deleteButton = document.createElement('button');
-            deleteButton.innerHTML = 'Delete';
-            deleteButton.style = 'margin-left: 12px;';
-            deleteButton.onclick = deleteTodo;
-            deleteTodo.id = todo.id;
-            element.appendChild(deleteButton)
-            const todoList = document.getElementById('todo-list')
-            todoList.appendChild(element); //To add elements to an end of the body  
+                const deleteButton = document.createElement('button');
+                deleteButton.innerText = 'Delete';
+                deleteButton.style = 'margin-left: 12px;';
+                deleteButton.onclick = deleteTodo;
+                deleteButton.id = todo.id;
+                element.appendChild(deleteButton)
+
+                const todoList = document.getElementById('todo-list')
+                todoList.appendChild(element); //To add elements to an end of the body  
         });   
         }
 
