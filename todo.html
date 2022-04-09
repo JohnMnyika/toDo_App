@@ -9,7 +9,7 @@
 <body>
     <input id="todo-title" type="text" />
     <input id="date-picker" type="date"/>
-    <button onclick="addTodo()">Add Todo</button>
+    <button onclick="addTodo()" id="addTasks">Add Todo</button>
 
     <div id="todo-list"></div>
 
@@ -76,15 +76,33 @@
 
     //Controller 
         function addTodo() {
-            const textbox = document.getElementById('todo-title');
-            const title = textbox.value;
-
             const datePicker = document.getElementById('date-picker');
             const dueDate = datePicker.value;
+            const body = document.getElementsByTagName('body')[0];
+            const errorDiv = document.getElementById('error');
 
-            createTodo(title, dueDate);
-            render();
+            if (dueDate == '') {
+                if (!errorDiv) {
+                    const div = createErrorMessage(body, 'Please enter the Due Date!');
+                    const addTasksButton = document.getElementById('addTasks');
+                    body.insertBefore(div, addTasksButton);
+                }
+            } else {
+                errorDiv?.remove();
+                const textbox = document.getElementById('todo-title');
+                const title = textbox.value;
+                createTodo(title, dueDate);
+                render();
+            }
+        }
 
+        function createErrorMessage(parent, message){
+            const textNode = document.createTextNode(message);
+            const div = document.createElement('div');
+            div.appendChild(textNode);
+            div.id = 'error';
+            div.style.color = 'red';
+            return div;
         }
 
         //Another way of writing functions
