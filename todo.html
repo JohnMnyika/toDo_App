@@ -15,21 +15,33 @@
 
     <script>
         //Model
-        let todos = [{
-            title: 'Get groceries',
-            dueDate: '2022-10-04',
-            id: 'id1'
-        }, {
-            title: 'Wash car',
-            dueDate: '2022-11-04',
-            id: 'id2'
-        }, {
-            title: 'Make dinner',
-            dueDate: '2022-12-04',
-            id: 'id3'
-        }];
+        //if local storage has a todos array, then use it
+        //Otherwise use the default array.
+        let todos;
 
-        render();
+        //Retrieve local storage
+        const savedTodos = JSON.parse(localStorage.getItem('todos'));
+        //Check if it is an array
+        if (Array.isArray(savedTodos)) {
+            todos = savedTodos;
+        } else {
+            todos = [{
+                title: 'Get groceries',
+                dueDate: '2022-10-04',
+                id: 'id1'
+                }, {
+                title: 'Wash car',
+                dueDate: '2022-11-04',
+                id: 'id2'
+                }, {
+                title: 'Make dinner',
+                dueDate: '2022-12-04',
+                id: 'id3'
+                }];
+             }
+             render();
+
+
         //Create a todo
         function createTodo(title,dueDate) {
             const id = '' + new Date().getTime();
@@ -39,8 +51,10 @@
                 dueDate: dueDate,
                 id: id
             });
+
+            saveTodos();
           }
-        //Delete a todo
+        //Deletes a todo
 
         function removeTodo(idToDelete) {
             todos = todos.filter(function (todo) {
@@ -51,7 +65,15 @@
                 } //If the id of this todo matches idToDelete, return false. For everythng else, retrun true
             });
 
+            saveTodos();
         }
+
+        //Saving todos
+
+        function saveTodos(){
+            localStorage.setItem('todos', JSON.stringify(todos));
+        }
+
     //Controller 
         function addTodo() {
             const textbox = document.getElementById('todo-title');
@@ -64,6 +86,11 @@
             render();
 
         }
+
+        //Another way of writing functions
+        const addTodo2 = function () {
+
+        };
         
         function deleteTodo(event) {
             const deleteButton = event.target;
@@ -73,10 +100,10 @@
             render();            
         }
         //View Section
-        function render(){
+        function render() {
             //reset our list
             document.getElementById('todo-list').innerHTML = '';
-
+            console.log(todos);
             todos.forEach(function(todo) {
                 const element = document.createElement('div');
                 element.innerText = todo.title + ' ' + todo.dueDate;
