@@ -5,10 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To Do App</title>
+    <style>
+        .control {
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
-    <input id="todo-title" type="text" />
-    <input id="date-picker" type="date"/>
+    <div class="control" id="title-field">
+        <input id="todo-title" type="text" />
+    </div>
+    <div class="control" id="date-field">
+        <input id="date-picker" type="date"/>
+    </div>
+
     <button onclick="addTodo()" id="addTasks">Add Todo</button>
 
     <div id="todo-list"></div>
@@ -18,6 +28,7 @@
         //if local storage has a todos array, then use it
         //Otherwise use the default array.
         let todos;
+
 
         //Retrieve local storage
         const savedTodos = JSON.parse(localStorage.getItem('todos'));
@@ -79,28 +90,46 @@
             const datePicker = document.getElementById('date-picker');
             const dueDate = datePicker.value;
             const body = document.getElementsByTagName('body')[0];
-            const errorDiv = document.getElementById('error');
+            const titleErrorDiv = document.getElementById('title-error');
+            const dateErrorDiv = document.getElementById('date-error');
+            let valid = true;
 
-            if (dueDate == '') {
-                if (!errorDiv) {
-                    const div = createErrorMessage(body, 'Please enter the Due Date!');
-                    const addTasksButton = document.getElementById('addTasks');
-                    body.insertBefore(div, addTasksButton);
+            const todoTitle = document.getElementById('todo-title').value;
+
+            if (!todoTitle) {
+                if (!titleErrorDiv) {
+                    const div = createErrorMessage(body, 'Please fll the task', 'title-error');
+                    document.getElementById('title-field').appendChild(div);
                 }
+                valid = false;
             } else {
-                errorDiv?.remove();
+                titleErrorDiv?.remove();
+            }
+            
+            if (!dueDate) {
+                if (!dateErrorDiv) {
+                    const div = createErrorMessage(body, 'Please enter the Due Date!', 'date-error');
+                    document.getElementById('date-field').appendChild(div);
+                }
+                valid = false;
+            } else {
+                dateErrorDiv?.remove();
+            }
+
+            if (valid) {
                 const textbox = document.getElementById('todo-title');
                 const title = textbox.value;
                 createTodo(title, dueDate);
                 render();
             }
+        
         }
 
-        function createErrorMessage(parent, message){
+        function createErrorMessage(parent, message, id){
             const textNode = document.createTextNode(message);
             const div = document.createElement('div');
             div.appendChild(textNode);
-            div.id = 'error';
+            div.id = id;
             div.style.color = 'red';
             return div;
         }
@@ -111,6 +140,8 @@
         };
         
         function deleteTodo(event) {
+            if (!confirm('Are you sure you want to delete?')) return;
+
             const deleteButton = event.target;
             const idToDelete = deleteButton.id;
 
@@ -121,7 +152,6 @@
         function render() {
             //reset our list
             document.getElementById('todo-list').innerHTML = '';
-            console.log(todos);
             todos.forEach(function(todo) {
                 const element = document.createElement('div');
                 element.innerText = todo.title + ' ' + todo.dueDate;
