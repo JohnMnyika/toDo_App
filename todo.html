@@ -89,12 +89,11 @@
         function addTodo() {
             const datePicker = document.getElementById('date-picker');
             const dueDate = datePicker.value;
+            const todoTitle = document.getElementById('todo-title').value;
             const body = document.getElementsByTagName('body')[0];
             const titleErrorDiv = document.getElementById('title-error');
             const dateErrorDiv = document.getElementById('date-error');
             let valid = true;
-
-            const todoTitle = document.getElementById('todo-title').value;
 
             if (!todoTitle) {
                 if (!titleErrorDiv) {
@@ -116,6 +115,11 @@
                 dateErrorDiv?.remove();
             }
 
+            if (exists(todoTitle, dueDate)) {
+                alert('Task (' + todoTitle + ') already exists');
+                valid = false;
+            }
+
             if (valid) {
                 const textbox = document.getElementById('todo-title');
                 const title = textbox.value;
@@ -123,6 +127,18 @@
                 render();
             }
         
+        }
+
+        function exists(title, dueDate) {
+            // loop through existing todo list
+            // return todos.find(todo => (todo.title === title && todo.dueDate === dueDate));
+            let todoExists = false;
+            todos.forEach(todo => {
+                if (todo.title === title && todo.dueDate === dueDate) {
+                    todoExists = true;
+                }
+            });
+            return todoExists;
         }
 
         function createErrorMessage(parent, message, id){
