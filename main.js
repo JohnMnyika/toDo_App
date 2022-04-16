@@ -18,6 +18,13 @@ window.addEventListener('load', () => {
 });
 document.getElementById('addTasks').addEventListener('click', function() {
     addTodo(todos);
+    // get the title input
+    const todoTitleInput = document.getElementById('todo-title');
+    // get the due date input
+    const dueDateInput = document.getElementById('date-picker');
+    // clear the inputs
+    todoTitleInput.value = "";
+    dueDateInput.value = "";
 });
 
 render(todos);
